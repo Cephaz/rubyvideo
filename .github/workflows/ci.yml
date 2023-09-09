@@ -8,6 +8,7 @@ on:
     branches:
       - main
       - ga-mrsk
+      - bring-back-esbuild
 
 concurrency: ci-${{ github.ref }}
 
@@ -62,8 +63,11 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Build assets
-        run: bin/vite build --clear --mode=test
+      - name: Build css assets
+        run: yarn build:css
+
+      - name: Build js assets
+        run: yarn build
 
       - name: Prepare database
         run: |
@@ -77,7 +81,7 @@ jobs:
       # - name: Smoke test database seeds
       #   run: sudo bin/rails db:reset
   deploy:
-    if: github.ref == 'refs/heads/ga-mrsk'
+    if: github.ref == 'refs/heads/bring-back-esbuild' || github.ref == 'refs/heads/ga-mrsk' || github.ref == 'refs/heads/main'
     needs: [lint, test]
     runs-on: ubuntu-latest
     env:
